@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Experiencia</title>
+    <!-- Chosen Palette: Slate & Indigo -->
+    <!-- Application Structure Plan: The application is designed as a single-page, single-task experience. A central "card" contains the entire survey form, creating a focused and distraction-free user flow. The structure is linear, guiding the user from top to bottom. A conditional question is dynamically shown/hidden to avoid overwhelming the user with irrelevant options. Upon completion, the form is replaced by a thank-you message, providing clear feedback. This structure was chosen for its simplicity and universal intuitiveness for a task like completing a survey. -->
+    <!-- Visualization & Content Choices: Text Input -> Standard <input> for name collection (universally understood). Yes/No & Scale Questions -> Styled <label>s acting as buttons tied to hidden radio inputs. This provides a larger, more engaging, and touch-friendly target than default radios, enhancing UX. Conditional Logic -> A question is toggled via JS, streamlining the form. Submit Button -> Dynamically enabled/disabled via JS validation to prevent incomplete submissions. All choices prioritize a clean, interactive, and mobile-first experience. No Chart.js/Plotly needed as there is no data visualization component. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .form-radio-label {
+            transition: all 0.2s ease-in-out;
+        }
+        .form-radio:checked + .form-radio-label {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .form-radio:focus + .form-radio-label {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <main class="w-full max-w-2xl">
+        <div id="survey-container" class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 transition-opacity duration-500 ease-in-out">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">Encuesta de Experiencia</h1>
+                <p class="text-slate-600 text-sm sm:text-base">Hola, buen día 😊 Nos gustaría hacerte unas breves preguntas para conocer tu experiencia. Solo te tomará un par de minutos:</p>
+            </div>
+
+            <form id="survey-form" class="space-y-8">
+                
+                <section>
+                    <label for="full-name" class="block text-base font-semibold text-slate-700 mb-2">¿Podrías compartirnos tu nombre completo, por favor?</label>
+                    <input type="text" id="full-name" name="fullName" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Tu nombre aquí..." required>
+                </section>
+
+                <section>
+                    <label class="block text-base font-semibold text-slate-700 mb-3">¿Actualmente estás trabajando?</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="radio" id="trabaja-si" name="isWorking" value="si" class="hidden form-radio" required>
+                        <label for="trabaja-si" class="form-radio-label cursor-pointer text-center py-3 px-4 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">✅ Sí</label>
+                        
+                        <input type="radio" id="trabaja-no" name="isWorking" value="no" class="hidden form-radio">
+                        <label for="trabaja-no" class="form-radio-label cursor-pointer text-center py-3 px-4 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">❌ No</label>
+                    </div>
+                </section>
+
+                <section id="prestaciones-question" class="hidden transition-all duration-500 ease-in-out">
+                    <label class="block text-base font-semibold text-slate-700 mb-3">¿Cuentas con todas las prestaciones de ley?</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="radio" id="prestaciones-si" name="hasBenefits" value="si" class="hidden form-radio">
+                        <label for="prestaciones-si" class="form-radio-label cursor-pointer text-center py-3 px-4 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">✅ Sí</label>
+                        
+                        <input type="radio" id="prestaciones-no" name="hasBenefits" value="no" class="hidden form-radio">
+                        <label for="prestaciones-no" class="form-radio-label cursor-pointer text-center py-3 px-4 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">❌ No</label>
+                    </div>
+                </section>
+
+                <section>
+                    <label class="block text-base font-semibold text-slate-700 mb-3">¿Consideras que los cursos de certificación y/o derechos laborales que tomaste fueron útiles para que obtuvieras empleo?</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="radio" id="cursos-empleo-si" name="coursesHelpedEmployment" value="si" class="hidden form-radio" required>
+                        <label for="cursos-empleo-si" class="form-radio-label cursor-pointer text-center py-3 px-4 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">✅ Sí</label>
+                        
+                        <input type="radio" id="cursos-empleo-no" name="coursesHelpedEmployment" value="no" class="hidden form-radio">
+                        <label for="cursos-empleo-no" class="form-radio-label cursor-pointer text-center py-3 px-4 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">❌ No</label>
+                    </div>
+                </section>
+
+                <section>
+                    <label class="block text-base font-semibold text-slate-700 mb-2">En una escala del 1 al 5, ¿qué tan útiles te parecieron los cursos de certificación y/o derechos laborales que tomaste?</label>
+                    <p class="text-sm text-slate-500 mb-3">(1 = nada útiles, 5 = muy útiles)</p>
+                    <div class="grid grid-cols-5 gap-2 sm:gap-3">
+                        <input type="radio" id="util-1" name="courseUsefulness" value="1" class="hidden form-radio" required>
+                        <label for="util-1" class="form-radio-label cursor-pointer text-center py-3 px-2 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">1️⃣</label>
+                        
+                        <input type="radio" id="util-2" name="courseUsefulness" value="2" class="hidden form-radio">
+                        <label for="util-2" class="form-radio-label cursor-pointer text-center py-3 px-2 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">2️⃣</label>
+                        
+                        <input type="radio" id="util-3" name="courseUsefulness" value="3" class="hidden form-radio">
+                        <label for="util-3" class="form-radio-label cursor-pointer text-center py-3 px-2 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">3️⃣</label>
+                        
+                        <input type="radio" id="util-4" name="courseUsefulness" value="4" class="hidden form-radio">
+                        <label for="util-4" class="form-radio-label cursor-pointer text-center py-3 px-2 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">4️⃣</label>
+                        
+                        <input type="radio" id="util-5" name="courseUsefulness" value="5" class="hidden form-radio">
+                        <label for="util-5" class="form-radio-label cursor-pointer text-center py-3 px-2 border border-slate-300 rounded-lg font-medium hover:bg-indigo-50 hover:border-indigo-400">5️⃣</label>
+                    </div>
+                </section>
+
+                <button type="submit" id="submit-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none shadow-lg shadow-indigo-500/50" disabled>
+                    Enviar Respuestas
+                </button>
+            </form>
+        </div>
+
+        <div id="thank-you-container" class="hidden bg-white rounded-2xl shadow-lg p-8 sm:p-10 md:p-12 text-center transition-opacity duration-500 ease-in-out">
+            <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">¡Gracias!</h2>
+            <p class="text-slate-600 text-lg">¡Muchas gracias por tu tiempo y por ayudarnos a seguir mejorando! 🙌</p>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('survey-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const prestacionesQuestion = document.getElementById('prestaciones-question');
+            const isWorkingRadios = document.getElementsByName('isWorking');
+            const prestacionesRadios = document.getElementsByName('hasBenefits');
+
+            const surveyContainer = document.getElementById('survey-container');
+            const thankYouContainer = document.getElementById('thank-you-container');
+
+            const requiredFields = [
+                'fullName', 
+                'isWorking', 
+                'coursesHelpedEmployment', 
+                'courseUsefulness'
+            ];
+
+            const handleIsWorkingChange = () => {
+                const isWorkingYes = document.getElementById('trabaja-si').checked;
+                if (isWorkingYes) {
+                    prestacionesQuestion.classList.remove('hidden');
+                    prestacionesQuestion.style.maxHeight = prestacionesQuestion.scrollHeight + "px";
+                    prestacionesRadios.forEach(radio => radio.required = true);
+                } else {
+                    prestacionesQuestion.classList.add('hidden');
+                    prestacionesQuestion.style.maxHeight = null;
+                    prestacionesRadios.forEach(radio => {
+                        radio.checked = false;
+                        radio.required = false;
+                    });
+                }
+                validateForm();
+            };
+
+            const validateForm = () => {
+                const formData = new FormData(form);
+                let isValid = true;
+
+                for (const fieldName of requiredFields) {
+                    if (!formData.has(fieldName) || !formData.get(fieldName)) {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (document.getElementById('trabaja-si').checked) {
+                    if (!formData.has('hasBenefits') || !formData.get('hasBenefits')) {
+                        isValid = false;
+                    }
+                }
+                
+                if (document.getElementById('full-name').value.trim() === '') {
+                    isValid = false;
+                }
+
+                submitBtn.disabled = !isValid;
+            };
+
+            isWorkingRadios.forEach(radio => radio.addEventListener('change', handleIsWorkingChange));
+            form.addEventListener('input', validateForm);
+            form.addEventListener('change', validateForm);
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const responses = Object.fromEntries(formData.entries());
+                
+                console.log('--- Respuestas de la Encuesta ---');
+                console.log(responses);
+                
+                surveyContainer.classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    surveyContainer.classList.add('hidden');
+                    thankYouContainer.classList.remove('hidden');
+                    thankYouContainer.classList.remove('opacity-0');
+                }, 500);
+            });
+            
+            // Initial check in case of browser auto-fill
+            validateForm();
+        });
+    </script>
+
+</body>
+</html>
